@@ -1,0 +1,24 @@
+---
+# tasks file for lighthouse-role
+# LIGHTHOUSE
+- name: Install EPEL
+  ansible.builtin.yum:
+    name: epel-release
+    state: present
+- name: Install prerequisites for Lighthouse
+  ansible.builtin.yum:
+    name:
+      - git
+      - nginx
+    state: present
+- name: Clone lighthouse repository
+  ansible.builtin.git:
+    repo: 'https://github.com/VKCOM/lighthouse'
+    dest: /opt/lighthouse
+    update: false
+- name: Deploy nginx config
+  ansible.builtin.template:
+    src: templates/lighthouse.conf.j2
+    dest: /etc/nginx/conf.d/lighthouse.conf
+    mode: "u+rwx"
+  notify: Start nginx service
